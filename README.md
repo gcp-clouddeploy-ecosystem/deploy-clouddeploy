@@ -13,27 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
-# `deploy-cloudrun` GitHub Action
+# `deploy-clouddeploy` GitHub Action
 
-Deploys your container image to [Cloud Run][cloud-run] and makes the URL
+Deploys pipeline to [Cloud Deploy][cloud-deploy] and makes the URL
 available to later build steps via outputs.
 
-## Table of Contents
-
-* [Prerequisites](#prerequisites)
-* [Usage](#usage)
-* [Inputs](#inputs)
-  * [Metadata customizations](#metadata-customizations)
-  * [Allow unauthenticated requests](#Allow-unauthenticated-requests)
-* [Outputs](#outputs)
-* [Credentials](#credentials)
-  * [Used with `setup-gcloud`](#Used-with-setup-gcloud)
-  * [Via Credentials](#Via-Credentials)
-  * [Via Application Default Credentials](#Via-Application-Default-Credentials)
-* [Example Workflows](#example-workflows)
-* [Migrating from `setup-gcloud`](#migrating-from-setup-gcloud)
-* [Contributing](#contributing)
-* [License](#License)
+> Note that this product Cloud Deploy is in Preview stage
 
 ## Prerequisites
 
@@ -47,9 +32,9 @@ Cloud Run service. See the [Credentials](#credentials) below for more informatio
 ## Usage
 
 ```yaml
-- name: Deploy to Cloud Run
+- name: Deploy to Cloud Deploy
   id: deploy
-  uses: google-github-actions/deploy-cloudrun@main
+  uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@main
   with:
     service: hello-cloud-run 
     image: gcr.io/cloudrun/hello
@@ -80,43 +65,6 @@ Cloud Run service. See the [Credentials](#credentials) below for more informatio
 | `flags` | _optional_ | | Space separated list of other Cloud Run flags, examples can be found: https://cloud.google.com/sdk/gcloud/reference/run/deploy#FLAGS. |
 | `gcloud_version` | _optional_ | `latest` | Pin the version of Cloud SDK `gcloud` CLI. |
 
-### Metadata customizations
-
-You can store your service specification in a YAML file. This will allow for
-further service configuration, such as [memory limits](https://cloud.google.com/run/docs/configuring/memory-limits),
-[CPU allocation](https://cloud.google.com/run/docs/configuring/cpu),
-[max instances](https://cloud.google.com/run/docs/configuring/max-instances),
-and [more.](https://cloud.google.com/sdk/gcloud/reference/run/deploy#OPTIONAL-FLAGS)
-
-- See [Deploying a new service](https://cloud.google.com/run/docs/deploying#yaml)
-to create a new YAML service definition, for example:
-
-```YAML
-apiVersion: serving.knative.dev/v1
-kind: Service
-metadata:
-  name: SERVICE
-spec:
-  template:
-    spec:
-      containers:
-      - image: IMAGE
-```
-
-- See [Deploy a new revision of an existing service](https://cloud.google.com/run/docs/deploying#yaml_1)
-to generated a YAML service specification from an existing service:
-
-```
-gcloud run services describe SERVICE --format yaml > service.yaml
-```
-### Allow unauthenticated requests
-
-A Cloud Run product recommendation is that CI/CD systems not set or change
-settings for allowing unauthenticated invocations. New deployments are
-automatically private services, while deploying a revision of a public
-(unauthenticated) service will preserve the IAM setting of public
-(unauthenticated). For more information, see [Controlling access on an individual service](https://cloud.google.com/run/docs/securing/managing-access).
-
 ## Outputs
 
 - `url`: The URL of your Cloud Run service.
@@ -126,8 +74,9 @@ automatically private services, while deploying a revision of a public
 There are a few ways to authenticate this action. A service account will be needed
 with the following roles:
 
-- Cloud Run Admin (`roles/run.admin`):
-  - Can create, update, and delete services.
+- Cloud Deploy Admin (`roles/cloudeploy.admin`):
+  - Can create, update, and delete pipelines.
+  - Approved pipeline executions
   - Can get and set IAM policies.
 
 This service account needs to a member of the `Compute Engine default service account`,
@@ -145,8 +94,8 @@ You can provide credentials using the [setup-gcloud][setup-gcloud] action:
     service_account_key: ${{ secrets.GCP_SA_KEY }}
     export_default_credentials: true
 
-- name: Deploy to Cloud Run
-  uses: google-github-actions/deploy-cloudrun@main
+- name: Deploy to Cloud Deploy
+  uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@main
   with:
     image: gcr.io/cloudrun/hello
     service: hello-cloud-run
@@ -161,7 +110,7 @@ action:
 
 ```yaml
 - name: Deploy to Cloud Run
-  uses: google-github-actions/deploy-cloudrun@main
+  uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@main
   with:
     credentials: ${{ secrets.GCP_SA_KEY }}
     image: gcr.io/cloudrun/hello
@@ -177,7 +126,7 @@ only works using a custom runner hosted on GCP.**
 
 ```yaml
 - name: Deploy to Cloud Run
-  uses: google-github-actions/deploy-cloudrun@main
+  uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@main
   with:
     image: gcr.io/cloudrun/hello
     service: hello-cloud-run
@@ -199,11 +148,7 @@ only works using a custom runner hosted on GCP.**
 
 1.  Add the the following [Cloud IAM roles][roles] to your service account:
 
-    - `Cloud Run Admin` - allows for the creation of new Cloud Run services
-
-    - `Service Account User` -  required to deploy to Cloud Run as service account
-
-    - `Storage Admin` - allow push to Google Container Registry (this grants project level access, but recommend reducing this scope to [bucket level permissions](https://cloud.google.com/container-registry/docs/access-control#grant).)
+    - `Cloud Deploy Admin` - allows for the creation of new Cloud Deploy Admin
 
 1.  [Download a JSON service account key][create-key] for the service account.
 
@@ -242,9 +187,9 @@ Example using `setup-gcloud`:
     project_id: ${{ env.PROJECT_ID }}
     service_account_key: ${{ secrets.GCP_SA_KEY }}
 
-- name: Deploy to Cloud Run
+- name: Deploy to Cloud Deploy
   run: |-
-    gcloud run deploy $SERVICE \
+    gcloud beta deploy $SERVICE \
       --region $REGION \
       --image gcr.io/$PROJECT_ID/$SERVICE \
       --platform managed \
@@ -255,7 +200,7 @@ Migrated to `deploy-cloudrun`:
 
 ```YAML
 - name: Deploy to Cloud Run
-  uses: google-github-actions/deploy-cloudrun@v0.2.0
+  uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@v0.2.0
   with:
     service: ${{ env.SERVICE }}
     image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
@@ -263,17 +208,22 @@ Migrated to `deploy-cloudrun`:
     credentials: ${{ secrets.GCP_SA_KEY }}
     env_vars: NAME="Hello World"
 ```
+
 Note: The action is for the "managed" platform and will not set access privileges such as [allowing unauthenticated requests](#Allow-unauthenticated-requests).
 
 ## Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md).
 
+## Acknowledgment
+
+This action was initialally forked [gcp-cloud-deploy-ecosystem/deploy-clouddeploy](https://github.com/gcp-cloud-deploy-ecosystem/deploy-clouddeploy).
+
 ## License
 
 See [LICENSE](LICENSE).
 
-[cloud-run]: https://cloud.google.com/run
+[cloud-deploy]: https://cloud.google.com/deploy
 [sa]: https://cloud.google.com/iam/docs/creating-managing-service-accounts
 [create-key]: https://cloud.google.com/iam/docs/creating-managing-service-account-keys
 [gh-runners]: https://help.github.com/en/actions/hosting-your-own-runners/about-self-hosted-runners

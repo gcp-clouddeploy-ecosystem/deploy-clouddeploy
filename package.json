@@ -1,7 +1,7 @@
 {
-  "name": "deploy-cloudrun",
+  "name": "deploy-clouddeploy",
   "version": "0.6.0",
-  "description": "Github Action: Deploy to Google Cloud Run",
+  "description": "Github Action: Deploy to Google Cloud Deploy",
   "main": "dist/index.js",
   "scripts": {
     "build": "ncc build src/index.ts",
@@ -12,22 +12,23 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/google-github-actions/deploy-cloudrun.git"
+    "url": "https://github.com/gcp-cloud-deploy-ecosystem/deploy-clouddeploy.git"
   },
   "keywords": [
     "actions",
     "google",
-    "cloud run",
+    "cloud deploy",
     "cloud",
-    "run",
+    "deploy",
+    "skaffold",
     "containers"
   ],
-  "author": "Google LLC",
+  "author": "gcp-cloud-deploy-ecosystem",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/google-github-actions/deploy-cloudrun/issues"
+    "url": "https://github.com/gcp-cloud-deploy-ecosystem/deploy-clouddeploy/issues"
   },
-  "homepage": "https://github.com/google-github-actions/deploy-cloudrun#readme",
+  "homepage": "https://github.com/gcp-cloud-deploy-ecosystem/deploy-clouddeploy#readme",
   "dependencies": {
     "@actions/core": "^1.5.0",
     "@actions/exec": "^1.1.0",

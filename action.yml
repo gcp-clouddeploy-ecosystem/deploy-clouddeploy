@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Deploy to Cloud Run
-author: Google LLC
+name: Deploy to Cloud Deploy
+author: gcp-cloud-deploy-ecosystem
 description: |-
-  Use this action to deploy a container in the Google Container Registry to Cloud Run.
+  Use this action to deploy a deployment pipeline to Google Cloud Platform Cloud Deploy
 
 inputs:
   image:
