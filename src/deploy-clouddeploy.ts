@@ -17,7 +17,7 @@
 import * as core from '@actions/core';
 import * as exec from '@actions/exec';
 import * as toolCache from '@actions/tool-cache';
-import * as setupGcloud from './src';
+import * as setupGcloud from './setup-google-cloud-sdk/src';
 import path from 'path';
 
 export const GCLOUD_METRICS_ENV_VAR = 'CLOUDSDK_METRICS_ENVIRONMENT';
@@ -33,7 +33,7 @@ export async function run(): Promise<void> {
     // Get inputs
     // Core inputs
     const credentials = core.getInput('credentials'); // Service account key
-    let projectId = core.getInput('project_id', { required: true });
+    let projectId = core.getInput('project_id');
     let gcloudVersion = core.getInput('gcloud_version');
     // Flags
     const region = core.getInput('region') || 'us-central1';

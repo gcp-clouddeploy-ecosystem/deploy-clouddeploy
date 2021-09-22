@@ -1,0 +1,9 @@
+apiVersion: deploy.cloud.google.com/v1beta1
+kind: DeliveryPipeline
+metadata:
+ name: test-delivery-pipeline
+description: test-delivery-pipeline
+serialPipeline:
+ stages:
+  - targetId: dev
+    profiles: []
