@@ -6,5 +6,4 @@ description: test-delivery-pipeline
 serialPipeline:
  stages:
   - targetId: dev
-    profiles: 
-      - dev
+    profiles: []
