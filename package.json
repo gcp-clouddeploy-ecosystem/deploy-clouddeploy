@@ -4,11 +4,13 @@
   "description": "Github Action: Deploy to Google Cloud Deploy",
   "main": "dist/index.js",
   "scripts": {
-    "build": "tsc && ncc build src/index.ts",
+    "build": "ncc build src/index.ts",
     "lint": "eslint src/ --ext .ts,.tsx",
     "format": "prettier --write **/*.ts",
     "test": "mocha -r ts-node/register -t 150s 'tests/unit/*.test.ts' --exit",
-    "e2e-tests": "mocha -r ts-node/register -t 150s 'tests/e2e.test.ts' --exit"
+    "e2e-tests": "mocha -r ts-node/register -t 150s 'tests/e2e.test.ts' --exit",
+    "package": "ncc build --source-map --license licenses.txt",
+    "all": "npm run build && npm run format && npm run lint && npm run package"
   },
   "repository": {
     "type": "git",
@@ -53,6 +55,7 @@
     "@types/uuid": "^8.3.1",
     "@typescript-eslint/eslint-plugin": "^4.31.0",
     "@typescript-eslint/parser": "^4.31.0",
+    "@vercel/ncc": "^0.31.1",
     "@zeit/ncc": "^0.22.3",
     "chai": "^4.2.0",
     "eslint": "^7.32.0",
