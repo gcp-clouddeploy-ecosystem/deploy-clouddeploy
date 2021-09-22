@@ -15,10 +15,10 @@ limitations under the License.
 -->
 # `deploy-clouddeploy` GitHub Action
 
-Deploys pipeline to [Cloud Deploy][cloud-deploy] and makes the URL
+Deploys delivery pipeline(s) and target(s) to [Cloud Deploy][cloud-deploy] and makes the URL
 available to later build steps via outputs.
 
-> Note that this product Cloud Deploy is in Preview stage
+> Note that this product Cloud Deploy is still in Preview stage
 
 ## Prerequisites
 
@@ -58,7 +58,7 @@ with the following roles:
 
 - Cloud Deploy Admin (`roles/cloudeploy.admin`):
   - Can create, update, and delete pipelines.
-  - Approved pipeline executions
+  - Approves pipeline executions
   - Can get and set IAM policies.
 
 This service account needs to a member of the `Compute Engine default service account`,
@@ -104,12 +104,6 @@ only works using a custom runner hosted on GCP.**
   uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@main
 ```
 
-## Example Workflows
-
-* [Deploy a prebuilt container](#deploy-a-prebuilt-container)
-
-* [Build and deploy a container](#build-and-deploy-a-container)
-
 ### Setup
 
 1.  Create a new Google Cloud Project (or select an existing project).
@@ -154,11 +148,6 @@ Migrated to `deploy-clouddeploy`:
 - name: Deploy to Cloud Deploy
   uses: gcp-cloud-deploy-ecosystem/deploy-clouddeploy@v0.2.0
   with:
-    service: ${{ env.SERVICE }}
-    image: gcr.io/${{ env.PROJECT_ID }}/${{ env.SERVICE }}
-    region: ${{ env.REGION }}
-    credentials: ${{ secrets.GCP_SA_KEY }}
-    env_vars: NAME="Hello World"
 ```
 ## Contributing
 
