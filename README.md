@@ -120,8 +120,7 @@ only works using a custom runner hosted on GCP.**
 
 1.  Add the the following [Cloud IAM roles][roles] to your service account:
 
-    - `Cloud Deploy Admin` - allows for the creation of new Cloud Deploy Admin
-    - `Cloud Build Builder` - allows for the creation of new Cloud Build builds
+    - `Cloud Deploy Developer` - allows for the creation of new Cloud Deploy Developer
 
 1.  [Download a JSON service account key][create-key] for the service account.
 
